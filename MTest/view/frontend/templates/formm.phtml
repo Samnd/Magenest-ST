@@ -1,0 +1,145 @@
+
+    <fieldset>
+        <legend>Customer ID:</legend>
+        <div style="float: left; width: 870px;">
+            <textarea name="memberid" placeholder="Nhap id ban muon tim." id="member-id" rows="1" cols="20"></textarea>
+        </div>
+        <div style="float: right; vertical-align: top;">
+            <button style="border-radius: 5px; height: 40px; width: 65px;"  id="submit-id">Search</button>
+        </div>
+    </fieldset>
+<hr>
+<div id="result">
+
+    <table>
+        <thead>
+            <tr>
+                <th>Member ID</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Created Time</th>
+                <th>Updated Time</th>
+                <th>Change</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr id="result-tr">
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+<script>
+    require([
+        'jquery'
+    ], function ($) {
+        'use strict';
+        $('div#result').hide();
+        $("button#submit-id").click(function(){
+            var member_id = $('textarea#member-id').val();
+            if (member_id !== "") {
+                $.ajax({
+                    url: '<?php echo $block->getUrl('mtest/part/time'); ?>',
+                    type: "POST",
+                    showLoader: true,
+                    data: {
+                        'member_id': member_id
+                    },
+                    dataType: 'json',
+
+                    success: function (response) {
+                        if (response.success) {
+                            $('div#result').show();
+                            var result = $.parseJSON(response.data);
+                            var name = result.name;
+                            var address = result.address;
+                            var phone = result.phone;
+                            $('#result-tr').html('<th>'+result.member_id+'</th>'+'<th id="th-name">'+name+'</th>'+
+                                '<th id="th-address">'+address+'</th>'+'<th id="th-phone">'+phone+'</th>'+
+                                '<th>'+result.created_time+'</th>'+'<th>'+result.updated_time+'</th>'+
+                                '<th><button id="change-info">Edit</button><button id="save-info">Save</button> </th>');
+                            $('div#result').append('<h6 id="notif"></h6>');
+                            $('button#save-info').hide();
+//                            $('h6#notif').hide();
+//                            $('#result-tr:nth-child(1)').html(result.name);
+//                            $('#result-tr:nth-child(2)').html(result.name);
+//                            $('#result-tr:nth-child(3)').html(result.address);
+//                            $('#result-tr:nth-child(4)').html(result.phone);
+//                            $('#result-tr:nth-child(5)').html(result.created_time);
+//                            $('#result-tr:nth-child(6)').html(result.updated_time);
+                            $('button#change-info').click(function(){
+//                                $('#result-tr').html('<th id="e-id">' + result.member_id + '</th>'+'<th><input type="text" id="e-name" value=" '+result.name+'"></th>'+
+//                                    '<th><input type="text" id="e-address" value=" '+result.address+ '"></th>'+'<th><input type="text" id="e-phone" value="'+result.phone+'"></th>'+
+//                                    '<th>'+result.created_time+'</th>'+'<th>'+result.updated_time+'</th>'+
+//                                    '<th><button id="save-info">Save</button></th>');
+                                $('h6#notif').html('');
+                                $('th#th-name').html('<input type="text" id="e-name" value=" '+name+'">');
+                                $('th#th-address').html('<input type="text" id="e-address" value=" '+address+'">');
+                                $('th#th-phone').html('<input type="text" id="e-phone" value=" '+phone+'">');
+                                $('button#change-info').hide();
+                                $('button#save-info').show();
+
+                                $('button#save-info').click(function(){
+                                    var IsPhone = function(number){
+                                        var regex = /^[0-9\-\+]{9,15}$/;
+                                        return regex.test(number);
+                                    };
+                                    var eid = result.member_id;
+                                    var newName = $('input#e-name').val();
+                                    var newAddress = $('input#e-address').val();
+                                    var newPhone = $('input#e-phone').val();
+                                    if(!IsPhone(newPhone)){
+                                        $('h6#notif').show();
+                                        $('h6#notif').append("Phone number is incorrect!."+'<br>');
+                                        return false;
+                                    } else { $('h6#notif').hide();}
+                                    $.ajax({
+                                        url: '<?php echo $block->getUrl('mtest/part/edit'); ?>',
+                                        type: "POST",
+                                        showLoader: true,
+                                        data: {
+                                            'id': eid,
+                                            'newName': newName,
+                                            'newAddress': newAddress,
+                                            'newPhone': newPhone
+                                        },
+                                        dataType: 'json',
+
+                                        success: function (response) {
+                                            if (response.success){
+                                                var result = $.parseJSON(response.data);
+                                                name = result.name;
+                                                phone = result.phone;
+                                                address = result.address;
+//                                                $('#result-tr').html('<th>'+result.member_id+'</th>'+'<th>'+result.name+'</th>'+
+//                                                    '<th>'+result.address+'</th>'+'<th>'+result.phone+'</th>'+
+//                                                    '<th>'+result.created_time+'</th>'+'<th>'+result.updated_time+'</th>'+
+//                                                    '<th><button id="change-info">Edit</button></th>');
+                                                $('th#th-name').html(name);
+                                                $('th#th-address').html(address);
+                                                $('th#th-phone').html(phone);
+                                                $('button#change-info').show();
+                                                $('button#save-info').hide();
+                                            }
+                                            if (response.error){
+                                                $('div#result').show();
+                                                $('div#result').html(response.errorMessage);
+                                            }
+                                        }
+                                    });
+                                });
+                            });
+                        }
+                        if (response.error) {
+                            $('div#result').show();
+                            $('div#result').html(response.errorMessage);
+                        }
+                    }
+                });
+            }
+        });
+
+    });
+</script>

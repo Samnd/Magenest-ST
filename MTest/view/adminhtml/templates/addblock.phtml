@@ -1,0 +1,66 @@
+<fieldset>
+    <legend>Add New Customer:</legend>
+    <div>
+        <p>Name: </p><textarea name="name" id="name" rows="1" cols="50"></textarea><br>
+        <p>Address: </p><textarea name="address" id="address" rows="1" cols="50"></textarea><br>
+        <p>Phone: </p><textarea name="phone" id="phone" rows="1" cols="50"></textarea>
+    </div>
+    <div>
+        <button style="border-radius: 5px; height: 40px; width: 65px;"  id="submit">Add</button>
+    </div>
+</fieldset>
+<h5 id="regex"></h5>
+<h4 id="result"></h4>
+<button><a href="<?php echo $block->getUrl('mtest/customer/index'); ?>">Back</a> </button>
+<script>
+    require([
+        'jquery'
+    ], function ($) {
+        'use strict';
+        $("button#submit").click(function() {
+            var IsPhone = function (number) {
+                var regex = /^[0-9\-\+]{9,15}$/;
+                return regex.test(number);
+            };
+            var name = $('textarea#name').val();
+            var address = $('textarea#address').val();
+            var phone = $('textarea#phone').val();
+            if(!IsPhone(phone)){
+                $('h5#regex').show();
+                $('h5#regex').append("Phone number is incorrect!."+'<br>');
+                return false;
+            } else { $('h5#regex').hide();}
+            if ((name !== "") && (address !=="")) {
+                $.ajax({
+                    url: '<?php echo $block->getUrl('mtest/customer/add'); ?>',
+                    type: "POST",
+                    showLoader: true,
+                    data: {
+                        'name': name,
+                        'address': address,
+                        'phone': phone
+                    },
+                    dataType: 'json',
+
+                    success: function (response) {
+                        if (response.success) {
+                            $('textarea#name').val('');
+                            $('textarea#address').val('');
+                            $('textarea#phone').val('');
+                            $('h4#result').html("Add customer success.");
+                        }
+                        if (response.error) {
+                            $('h4#result').html("Something went wrong.");
+                        }
+                    },
+                    error: function (){
+                        $('h4#result').append("Error corrupted." + '<br>');
+                    }
+                });
+            } else {
+                $('h5#regex').show();
+                $('h5#regex').append("Name or phone is incorrect");
+            }
+        });
+    });
+</script>

@@ -1,0 +1,17 @@
+<?php
+ 
+$data = $block->getGreetings();
+ 
+?>
+<div class="my-greetings-header">
+    <div class="my-gretings-title">
+        <h2><?php echo __("My Greetings"); ?></h2>
+    </div>
+    <div class="my-greetings-list">
+        <ul>
+            <?php foreach($data as $greeting): ?>
+                <li><?php echo $greeting->getGreetingText(); ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</div>

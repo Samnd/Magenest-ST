@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <!--<menu>-->
+        <!--<add-->
+                <!--id="Packt_MTest::mtest"-->
+                <!--title="MTest"-->
+                <!--module="Packt_MTest"-->
+                <!--sortOrder="50"-->
+                <!--parent="Magento_Backend::content"-->
+                <!--resource="Packt_MTest::mtest"-->
+        <!--/>-->
+        <!--<add-->
+                <!--id="Packt_MTest::customer"-->
+                <!--title="Customer List"-->
+                <!--module="Packt_MTest"-->
+                <!--sortOrder="55"-->
+                <!--parent="Packt_MTest::mtest"-->
+                <!--action="mtest/customer/"-->
+                <!--resource="Packt_MTest::customer"-->
+        <!--/>-->
+    <!--</menu>-->
+    <menu>
+        <add id="Packt_MTest::mtest"
+             title="Magenest"
+             module="Packt_MTest"
+             sortOrder="50"
+             resource="Packt_MTest::mtest" />
+        <add id="Packt_MTest::customer"
+             title="Customer List"
+             module="Packt_MTest"
+             sortOrder="20"
+             parent="Packt_MTest::mtest"
+             action="mtest/customer"
+             resource="Packt_MTest::customer"/>
+    </menu>
+</config>

@@ -1,0 +1,70 @@
+<?php $data = $block->getDataById($this->getRequest()->getParams('id')); ?>
+<fieldset>
+    <legend>Edit A Customer:</legend>
+    <div>
+        <p>New Name: </p><textarea name="name" id="new-name" rows="1" cols="50"><?php echo $data['name']; ?></textarea>
+        <p>New Address: </p><textarea name="address" id="new-address" rows="1" cols="50"><?php echo $data['address']; ?></textarea>
+        <p>New Phone: </p><textarea name="phone" id="new-phone" rows="1" cols="50"><?php echo $data['phone']; ?></textarea>
+    </div>
+    <div>
+        <button style="border-radius: 5px; height: 40px; width: 65px;"  id="submit">Edit</button>
+    </div>
+</fieldset>
+<input type="hidden" id="eid" value="<?php echo $data['member_id']; ?>" />
+<h5 id="regex"></h5>
+<h4 id="result"></h4>
+<button><a href="<?php echo $block->getUrl('mtest/customer/index'); ?>">Back</a> </button>
+
+<hr>
+<script>
+    require([
+        'jquery'
+    ], function ($) {
+        'use strict';
+        $("button#submit").click(function() {
+            var IsPhone = function (number) {
+                var regex = /^[0-9\-\+]{9,15}$/;
+                return regex.test(number);
+            };
+            var id = $('input#eid').val();
+            var newname = $('textarea#new-name').val();
+            var newaddress = $('textarea#new-address').val();
+            var newphone = $('textarea#new-phone').val();
+            if(!IsPhone(newphone)){
+                $('h5#regex').show();
+                $('h5#regex').append("Phone number is incorrect!."+'<br>');
+                return false;
+            } else { $('h5#regex').hide();}
+            if ((newname !== "") && (newaddress !=="")) {
+                $.ajax({
+                    url: '<?php echo $block->getUrl('mtest/customer/edit'); ?>',
+                    type: "POST",
+                    showLoader: true,
+                    data: {
+                        'id': id,
+                        'name': newname,
+                        'address': newaddress,
+                        'phone': newphone
+                    },
+                    dataType: 'json',
+
+                    success: function (response) {
+                        if (response.success) {
+
+                            $('h4#result').html("Edit success.");
+                        }
+                        if (response.error) {
+                            $('h4#result').html("Something went wrong.");
+                        }
+                    },
+                    error: function (){
+                        $('h4#result').html("Error corrupted." + '<br>');
+                    }
+                });
+            } else {
+                $('h5#regex').show();
+                $('h5#regex').append("Name or phone is incorrect");
+            }
+        });
+    });
+</script>
