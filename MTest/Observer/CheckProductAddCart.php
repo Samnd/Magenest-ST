@@ -1,4 +1,5 @@
 <?php
+
 namespace Packt\MTest\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
@@ -21,9 +22,10 @@ class CheckProductAddCart implements ObserverInterface
     {
         $expect = $this->configHelper->getExpectProduct();
         $data = $observer->getProduct()->getData();
-        if ($expect !== $data['name']){
-            throw new \Magento\Framework\Exception\LocalizedException(__("sdsfsafafsa")) ;
+        if ($expect !== $data['name']) {
+//            throw new \Magento\Framework\Exception\LocalizedException(__("You can\'t add this product to cart.")) ;
 //            \Exception(__("sadsfafsfsa"));
+            return true;
         } else {
             return true;
         }

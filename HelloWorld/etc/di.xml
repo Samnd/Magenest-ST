@@ -27,5 +27,7 @@
             </argument>
         </arguments>
     </type>
+
     <preference for="Packt\HelloWorld\Block\Landingspage" type="Packt\HelloWorld\Block\ChangeBlock" />
+
 </config>
